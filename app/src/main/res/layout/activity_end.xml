@@ -8,9 +8,10 @@
 
     <TextView
         android:id="@+id/score"
-        android:textSize="40sp"
+        android:textSize="30sp"
         android:layout_width="match_parent"
         android:layout_height="0sp"
+        android:gravity="center"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.5"/>
     <Button

@@ -81,14 +81,13 @@ public class AnswerActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 for (int i=0;i<radioGroup.getChildCount();i++) {
                     RadioButton radioButton = (RadioButton) radioGroup.getChildAt(i);
                     if (radioButton.isChecked()) {
                         if (radioButton.getId() == startId+getIntAnswer()) {
                             if (index < 10) {
                                 index++;
+                                radioButton.setChecked(false);
                                 setText(index);
                             }
                             else {
@@ -98,7 +97,8 @@ public class AnswerActivity extends AppCompatActivity {
                             }
                         }
                         else {
-                            value -= 10;
+                            while (value >= 10)
+                                value -= 10;
                             Toast.makeText(AnswerActivity.this,"正确答案是: "+getAnswer(),Toast.LENGTH_SHORT).show();
                         }
                         break;
