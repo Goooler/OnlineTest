@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -52,9 +55,25 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+    public void getJSONWithJObj() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder().url("http://184.170.222.14/test.json").build();
+                    Response response = client.newCall(request).execute();
+                    String responseData = response.body().string();
+                    parseJSONWithJObj(responseData);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     public void parseXMLWithPull(String xmlData) {
-
-
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser xmlPullParser = factory.newPullParser();
@@ -67,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
             String choice_2 = "";
             String choice_3 = "";
             String choice_4 = "";
-
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 String nodeName = xmlPullParser.getName();
                 switch (eventType) {
@@ -111,6 +129,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void parseJSONWithJObj(String jsonData) {
+        try {
+            JSONArray jsonArray = new JSONArray(jsonData);
+            for (int i=0;i<jsonArray.length();i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String id = jsonObject.getString("id");
+                String description = jsonObject.getString("description");
+                String answer = jsonObject.getString("answer");
+                String choice_1 = jsonObject.getString("choice_1");
+                String choice_2 = jsonObject.getString("choice_2");
+                String choice_3 = jsonObject.getString("choice_3");
+                String choice_4 = jsonObject.getString("choice_4");
+                insertValues(id,description,answer,choice_1,choice_2,choice_3,choice_4);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +156,8 @@ public class MainActivity extends AppCompatActivity {
         Button start = (Button) findViewById(R.id.start);
         dbHelper = new DatabaseHelper(this,"Key.db",null,1);
 
-        getXMLWithPull();
+        //getXMLWithPull();
+        getJSONWithJObj();
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
