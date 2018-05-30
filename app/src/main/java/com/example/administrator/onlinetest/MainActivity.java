@@ -9,12 +9,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         db.insert("Key",null,values);
     }
 
+
     public void getXMLWithPull() {
         new Thread(new Runnable() {
             @Override
@@ -55,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+    public void getXMLWithSAX() {
+
+    }
+
     public void getJSONWithJObj() {
         new Thread(new Runnable() {
             @Override
@@ -65,6 +74,24 @@ public class MainActivity extends AppCompatActivity {
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJObj(responseData);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public void getJSONWithGSON() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder().url("http://184.170.222.14/test.xml").build();
+                    Response response = client.newCall(request).execute();
+                    String responseData = response.body().string();
+                    parseJSONWithGSON(responseData);
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -129,6 +156,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void parseXMLWithSAX(String xmlData) {
+
+    }
+
     public void parseJSONWithJObj(String jsonData) {
         try {
             JSONArray jsonArray = new JSONArray(jsonData);
@@ -149,6 +180,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void parseJSONWithGSON(String jsonData) {
+        Gson gson = new Gson();
+        List<Question> questionList = gson.fromJson(jsonData,new TypeToken<List<Question>>(){}.getType());
+        for (Question question:questionList) {
+            insertValues( question.getId(),question.getDescription(),question.getAnswer(),
+                    question.getChoice_1(),question.getChoice_2(),question.getChoice_3(),question.getChoice_4() );
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this,"Key.db",null,1);
 
         //getXMLWithPull();
-        getJSONWithJObj();
+        getJSONWithGSON();
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
