@@ -196,8 +196,7 @@ public class MainActivity extends AppCompatActivity {
         Button start = (Button) findViewById(R.id.start);
         dbHelper = new DatabaseHelper(this,"Key.db",null,1);
 
-        //getXMLWithPull();
-        getJSONWithGSON();
+        getJSONWithJObj();
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override

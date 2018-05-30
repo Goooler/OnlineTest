@@ -48,7 +48,7 @@ public class AnswerActivity extends AppCompatActivity {
         }
         cursor.close();
 
-        question.setText(description);
+        question.setText(i+".  "+description);
         CB_1.setText(choice_1);
         CB_2.setText(choice_2);
         CB_3.setText(choice_3);
@@ -97,7 +97,7 @@ public class AnswerActivity extends AppCompatActivity {
                             }
                         }
                         else {
-                            while (value >= 10)
+                            if (value >= 10)
                                 value -= 10;
                             Toast.makeText(AnswerActivity.this,"正确答案是: "+getAnswer(),Toast.LENGTH_SHORT).show();
                         }
