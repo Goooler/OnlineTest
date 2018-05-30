@@ -20,6 +20,20 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
 
+    public  void insertValues(String id,String description,String answer,String choice_1,String choice_2,
+                              String choice_3,String choice_4) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id",id);
+        values.put("description",description);
+        values.put("answer",answer);
+        values.put("choice_1",choice_1);
+        values.put("choice_2",choice_2);
+        values.put("choice_3",choice_3);
+        values.put("choice_4",choice_4);
+        db.insert("Key",null,values);
+    }
+
     public void getXMLWithPull() {
         new Thread(new Runnable() {
             @Override
@@ -39,8 +53,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void parseXMLWithPull(String xmlData) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
+
 
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -84,14 +97,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case  XmlPullParser.END_TAG: {
                         if ("question".equals(nodeName)) {
-                            values.put("id",id);
-                            values.put("description",description);
-                            values.put("answer",answer);
-                            values.put("choice_1",choice_1);
-                            values.put("choice_2",choice_2);
-                            values.put("choice_3",choice_3);
-                            values.put("choice_4",choice_4);
-                            db.insert("Key",null,values);
+                            insertValues(id,description,answer,choice_1,choice_2,choice_3,choice_4);
                         }
                         break;
                     }
@@ -112,11 +118,12 @@ public class MainActivity extends AppCompatActivity {
         Button start = (Button) findViewById(R.id.start);
         dbHelper = new DatabaseHelper(this,"Key.db",null,1);
 
+        getXMLWithPull();
+
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,AnswerActivity.class);
-                getXMLWithPull();
                 startActivity(intent);
             }
         });
