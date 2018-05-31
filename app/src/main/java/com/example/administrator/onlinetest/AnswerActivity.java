@@ -31,7 +31,6 @@ public class AnswerActivity extends AppCompatActivity {
     private String choice_3;
     private String choice_4;
 
-
     public void setText(int i) {
         dbHelper = new DatabaseHelper(this,"Key.db",null,1);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -74,9 +73,7 @@ public class AnswerActivity extends AppCompatActivity {
         CB_3 = (RadioButton) findViewById(R.id.choice_3);
         CB_4 = (RadioButton) findViewById(R.id.choice_4);
         Button submit = (Button) findViewById(R.id.submit);
-
-        final int startId = CB_1.getId();
-        setText(1);
+        setText(index);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +81,7 @@ public class AnswerActivity extends AppCompatActivity {
                 for (int i=0;i<radioGroup.getChildCount();i++) {
                     RadioButton radioButton = (RadioButton) radioGroup.getChildAt(i);
                     if (radioButton.isChecked()) {
-                        if (radioButton.getId() == startId+getIntAnswer()) {
+                        if ( radioButton.getId() == CB_1.getId()+getIntAnswer() ) {
                             if (index < 10) {
                                 index++;
                                 radioButton.setChecked(false);

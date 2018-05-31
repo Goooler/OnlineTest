@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         db.insert("Key",null,values);
     }
 
-
     public void getXMLWithPull() {
         new Thread(new Runnable() {
             @Override
