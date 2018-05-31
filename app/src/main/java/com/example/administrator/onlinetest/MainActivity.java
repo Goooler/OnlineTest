@@ -14,11 +14,15 @@ import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
 import java.util.List;
+
+import javax.xml.parsers.SAXParserFactory;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -61,7 +65,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getXMLWithSAX() {
-
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder().url("http://184.170.222.14/test.xml").build();
+                    Response response = client.newCall(request).execute();
+                    String responseData = response.body().string();
+                    parseXMLWithSAX(responseData);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     public void getJSONWithJObj() {
@@ -157,7 +175,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void parseXMLWithSAX(String xmlData) {
-
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            XMLReader xmlReader = factory.newSAXParser().getXMLReader();
+            ContentHandler handler = new ContentHandler();
+            xmlReader.setContentHandler(handler);
+            xmlReader.parse(new InputSource(new StringReader(xmlData)));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void parseJSONWithJObj(String jsonData) {
@@ -196,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
         Button start = (Button) findViewById(R.id.start);
         dbHelper = new DatabaseHelper(this,"Key.db",null,1);
 
-        getJSONWithJObj();
+        getXMLWithSAX();
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
