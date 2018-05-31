@@ -20,6 +20,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.SAXParserFactory;
@@ -106,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://184.170.222.14/test.xml").build();
+                    Request request = new Request.Builder().url("http://184.170.222.14/test.json").build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithGSON(responseData);
@@ -210,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
     public void parseJSONWithGSON(String jsonData) {
         Gson gson = new Gson();
         List<Question> questionList = gson.fromJson(jsonData,new TypeToken<List<Question>>(){}.getType());
+
         for (Question question:questionList) {
             insertValues( question.getId(),question.getDescription(),question.getAnswer(),
                     question.getChoice_1(),question.getChoice_2(),question.getChoice_3(),question.getChoice_4() );
@@ -223,7 +226,10 @@ public class MainActivity extends AppCompatActivity {
         Button start = (Button) findViewById(R.id.start);
         dbHelper = new DatabaseHelper(this,"Key.db",null,1);
 
-        getXMLWithSAX();
+        getXMLWithPull();
+        //getXMLWithSAX();
+        //getJSONWithJObj();
+        //getJSONWithGSON();
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
