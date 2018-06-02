@@ -9,7 +9,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CREATE_KEY =
             "create table Key ("+"id integer primary key autoincrement,"
                     +"description text,"+"answer text,"+"choice_1 text,"
-                    +"choice_2,"+"choice_3,"+"choice_4 text)";
+                    +"choice_2 text,"+"choice_3 text,"+"choice_4 text)";
 
     private Context mContext;
 
