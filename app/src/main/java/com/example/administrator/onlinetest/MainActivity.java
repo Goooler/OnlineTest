@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://184.170.222.14/test.xml").build();
+                    Request request = new Request.Builder().url("http://184.170.222.135/test.xml").build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseXMLWithPull(responseData);
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://184.170.222.14/test.xml").build();
+                    Request request = new Request.Builder().url("http://184.170.222.135/test.xml").build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseXMLWithSAX(responseData);
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://184.170.222.14/test.json").build();
+                    Request request = new Request.Builder().url("http://184.170.222.135/test.json").build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJObj(responseData);
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://184.170.222.14/test.json").build();
+                    Request request = new Request.Builder().url("http://184.170.222.135/test.json").build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithGSON(responseData);
