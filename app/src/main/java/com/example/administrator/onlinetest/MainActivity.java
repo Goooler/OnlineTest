@@ -33,18 +33,18 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
 
-    public  void insertValues(String id,String description,String answer,String choice_1,String choice_2,
-                              String choice_3,String choice_4) {
+    public void insertValues(String id, String description, String answer, String choice_1, String choice_2,
+                             String choice_3, String choice_4) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("id",id);
-        values.put("description",description);
-        values.put("answer",answer);
-        values.put("choice_1",choice_1);
-        values.put("choice_2",choice_2);
-        values.put("choice_3",choice_3);
-        values.put("choice_4",choice_4);
-        db.insert("Key",null,values);
+        values.put("id", id);
+        values.put("description", description);
+        values.put("answer", answer);
+        values.put("choice_1", choice_1);
+        values.put("choice_2", choice_2);
+        values.put("choice_3", choice_3);
+        values.put("choice_4", choice_4);
+        db.insert("Key", null, values);
     }
 
     public void getXMLWithPull() {
@@ -57,8 +57,7 @@ public class MainActivity extends AppCompatActivity {
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseXMLWithPull(responseData);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -75,8 +74,7 @@ public class MainActivity extends AppCompatActivity {
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseXMLWithSAX(responseData);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -93,8 +91,7 @@ public class MainActivity extends AppCompatActivity {
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJObj(responseData);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -111,8 +108,7 @@ public class MainActivity extends AppCompatActivity {
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithGSON(responseData);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -138,39 +134,33 @@ public class MainActivity extends AppCompatActivity {
                     case XmlPullParser.START_TAG: {
                         if ("id".equals(nodeName)) {
                             id = xmlPullParser.nextText();
-                        }
-                        else if ("description".equals(nodeName)) {
+                        } else if ("description".equals(nodeName)) {
                             description = xmlPullParser.nextText();
-                        }
-                        else if ("answer".equals(nodeName)) {
+                        } else if ("answer".equals(nodeName)) {
                             answer = xmlPullParser.nextText();
-                        }
-                        else if ("choice_1".equals(nodeName)) {
+                        } else if ("choice_1".equals(nodeName)) {
                             choice_1 = xmlPullParser.nextText();
-                        }
-                        else if ("choice_2".equals(nodeName)) {
+                        } else if ("choice_2".equals(nodeName)) {
                             choice_2 = xmlPullParser.nextText();
-                        }
-                        else if ("choice_3".equals(nodeName)) {
+                        } else if ("choice_3".equals(nodeName)) {
                             choice_3 = xmlPullParser.nextText();
-                        }
-                        else if ("choice_4".equals(nodeName)) {
+                        } else if ("choice_4".equals(nodeName)) {
                             choice_4 = xmlPullParser.nextText();
                         }
                         break;
                     }
-                    case  XmlPullParser.END_TAG: {
+                    case XmlPullParser.END_TAG: {
                         if ("question".equals(nodeName)) {
-                            insertValues(id,description,answer,choice_1,choice_2,choice_3,choice_4);
+                            insertValues(id, description, answer, choice_1, choice_2, choice_3, choice_4);
                         }
                         break;
                     }
-                    default:break;
+                    default:
+                        break;
                 }
                 eventType = xmlPullParser.next();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -182,8 +172,7 @@ public class MainActivity extends AppCompatActivity {
             ContentHandler handler = new ContentHandler();
             xmlReader.setContentHandler(handler);
             xmlReader.parse(new InputSource(new StringReader(xmlData)));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -191,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
     public void parseJSONWithJObj(String jsonData) {
         try {
             JSONArray jsonArray = new JSONArray(jsonData);
-            for (int i=0;i<jsonArray.length();i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String id = jsonObject.getString("id");
                 String description = jsonObject.getString("description");
@@ -200,21 +189,21 @@ public class MainActivity extends AppCompatActivity {
                 String choice_2 = jsonObject.getString("choice_2");
                 String choice_3 = jsonObject.getString("choice_3");
                 String choice_4 = jsonObject.getString("choice_4");
-                insertValues(id,description,answer,choice_1,choice_2,choice_3,choice_4);
+                insertValues(id, description, answer, choice_1, choice_2, choice_3, choice_4);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void parseJSONWithGSON(String jsonData) {
         Gson gson = new Gson();
-        List<Question> questionList = gson.fromJson(jsonData,new TypeToken<List<Question>>(){}.getType());
+        List<Question> questionList = gson.fromJson(jsonData, new TypeToken<List<Question>>() {
+        }.getType());
 
-        for (Question question:questionList) {
-            insertValues( question.getId(),question.getDescription(),question.getAnswer(),
-                    question.getChoice_1(),question.getChoice_2(),question.getChoice_3(),question.getChoice_4() );
+        for (Question question : questionList) {
+            insertValues(question.getId(), question.getDescription(), question.getAnswer(),
+                    question.getChoice_1(), question.getChoice_2(), question.getChoice_3(), question.getChoice_4());
         }
     }
 
@@ -223,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button start = (Button) findViewById(R.id.start);
-        dbHelper = new DatabaseHelper(this,"Key.db",null,1);
+        dbHelper = new DatabaseHelper(this, "Key.db", null, 1);
 
         //getXMLWithPull();
         //getXMLWithSAX();
@@ -233,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,AnswerActivity.class);
+                Intent intent = new Intent(MainActivity.this, AnswerActivity.class);
                 startActivity(intent);
             }
         });

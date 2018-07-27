@@ -32,11 +32,10 @@ public class AnswerActivity extends AppCompatActivity {
     private String choice_4;
 
     public void setText(int i) {
-        dbHelper = new DatabaseHelper(this,"Key.db",null,1);
+        dbHelper = new DatabaseHelper(this, "Key.db", null, 1);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cursor = db.rawQuery("select * from Key where id=?",new String[]{i+""});
-        if(cursor.moveToFirst())
-        {
+        Cursor cursor = db.rawQuery("select * from Key where id=?", new String[]{i + ""});
+        if (cursor.moveToFirst()) {
             id = cursor.getInt(cursor.getColumnIndex("id"));
             description = cursor.getString(cursor.getColumnIndex("description"));
             answer = cursor.getString(cursor.getColumnIndex("answer"));
@@ -47,7 +46,7 @@ public class AnswerActivity extends AppCompatActivity {
         }
         cursor.close();
 
-        question.setText(i+".  "+description);
+        question.setText(i + ".  " + description);
         CB_1.setText(choice_1);
         CB_2.setText(choice_2);
         CB_3.setText(choice_3);
@@ -59,7 +58,7 @@ public class AnswerActivity extends AppCompatActivity {
     }
 
     public int getIntAnswer() {
-        return answer.charAt(0)-65;
+        return answer.charAt(0) - 65;
     }
 
     @Override
@@ -78,25 +77,23 @@ public class AnswerActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i=0;i<radioGroup.getChildCount();i++) {
+                for (int i = 0; i < radioGroup.getChildCount(); i++) {
                     RadioButton radioButton = (RadioButton) radioGroup.getChildAt(i);
                     if (radioButton.isChecked()) {
-                        if ( radioButton.getId() == CB_1.getId()+getIntAnswer() ) {
+                        if (radioButton.getId() == CB_1.getId() + getIntAnswer()) {
                             if (index < 10) {
                                 index++;
                                 radioButton.setChecked(false);
                                 setText(index);
-                            }
-                            else {
-                                Intent intent = new Intent(AnswerActivity.this,EndActivity.class);
-                                intent.putExtra("value",value);
+                            } else {
+                                Intent intent = new Intent(AnswerActivity.this, EndActivity.class);
+                                intent.putExtra("value", value);
                                 startActivity(intent);
                             }
-                        }
-                        else {
+                        } else {
                             if (value >= 10)
                                 value -= 10;
-                            Toast.makeText(AnswerActivity.this,"正确答案是: "+getAnswer(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AnswerActivity.this, "正确答案是: " + getAnswer(), Toast.LENGTH_SHORT).show();
                         }
                         break;
                     }

@@ -20,18 +20,17 @@ public class EndActivity extends AppCompatActivity {
         retest = (Button) findViewById(R.id.retest);
 
         Intent intent = getIntent();
-        int value = intent.getIntExtra("value",0);
+        int value = intent.getIntExtra("value", 0);
 
-        if (value>=90) {
-            score.setText("恭喜你通过考试，成绩: "+value);
-        }
-        else
-            score.setText("抱歉没通过考试，成绩: "+value);
+        if (value >= 90) {
+            score.setText("恭喜你通过考试，成绩: " + value);
+        } else
+            score.setText("抱歉没通过考试，成绩: " + value);
 
         retest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1 = new Intent(EndActivity.this,MainActivity.class);
+                Intent intent1 = new Intent(EndActivity.this, MainActivity.class);
                 startActivity(intent1);
             }
         });
