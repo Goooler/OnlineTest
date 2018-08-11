@@ -1,6 +1,8 @@
 package com.example.administrator.onlinetest;
 
-public class Question {
+import java.io.Serializable;
+
+public class Question implements Serializable {
     private String id;
     private String description;
     private String answer;
@@ -8,6 +10,16 @@ public class Question {
     private String choice_2;
     private String choice_3;
     private String choice_4;
+
+    public Question(String id, String description, String answer, String choice_1, String choice_2, String choice_3, String choice_4) {
+        this.id = id;
+        this.description = description;
+        this.answer = answer;
+        this.choice_1 = choice_1;
+        this.choice_2 = choice_2;
+        this.choice_3 = choice_3;
+        this.choice_4 = choice_4;
+    }
 
     public String getId() {
         return id;

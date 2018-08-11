@@ -19,6 +19,7 @@ import org.xml.sax.XMLReader;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.Serializable;
 import java.io.StringReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -32,10 +33,15 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
+    private String responseData;
+    private List<Question> questionList = new ArrayList<>();
+    private String xmlUrl = "http://184.170.222.135/test.xml";
+    private String jsonUrl = "http://184.170.222.135/test.json";
 
-    public void insertValues(String id, String description, String answer, String choice_1, String choice_2,
-                             String choice_3, String choice_4) {
+    private void insertToDatabase(String id, String description, String answer, String choice_1, String choice_2,
+                                  String choice_3, String choice_4) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL("delete from Key");
         ContentValues values = new ContentValues();
         values.put("id", id);
         values.put("description", description);
@@ -47,16 +53,22 @@ public class MainActivity extends AppCompatActivity {
         db.insert("Key", null, values);
     }
 
-    public void getXMLWithPull() {
+    private void insertToDatabase(List<Question> questionList) {
+        for (Question question : questionList) {
+            insertToDatabase(question.getId(), question.getDescription(), question.getAnswer(), question.getChoice_1(),
+                    question.getChoice_2(), question.getChoice_3(), question.getChoice_4());
+        }
+    }
+
+    public void getXML() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://184.170.222.135/test.xml").build();
+                    Request request = new Request.Builder().url(xmlUrl).build();
                     Response response = client.newCall(request).execute();
-                    String responseData = response.body().string();
-                    parseXMLWithPull(responseData);
+                    responseData = response.body().string();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -64,49 +76,15 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    public void getXMLWithSAX() {
+    public void getJSON() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://184.170.222.135/test.xml").build();
+                    Request request = new Request.Builder().url(jsonUrl).build();
                     Response response = client.newCall(request).execute();
-                    String responseData = response.body().string();
-                    parseXMLWithSAX(responseData);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    public void getJSONWithJObj() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://184.170.222.135/test.json").build();
-                    Response response = client.newCall(request).execute();
-                    String responseData = response.body().string();
-                    parseJSONWithJObj(responseData);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    public void getJSONWithGSON() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://184.170.222.135/test.json").build();
-                    Response response = client.newCall(request).execute();
-                    String responseData = response.body().string();
+                    responseData = response.body().string();
                     parseJSONWithGSON(responseData);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -151,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case XmlPullParser.END_TAG: {
                         if ("question".equals(nodeName)) {
-                            insertValues(id, description, answer, choice_1, choice_2, choice_3, choice_4);
+                            questionList.add(new Question(id, description, answer, choice_1, choice_2, choice_3, choice_4));
                         }
                         break;
                     }
@@ -189,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 String choice_2 = jsonObject.getString("choice_2");
                 String choice_3 = jsonObject.getString("choice_3");
                 String choice_4 = jsonObject.getString("choice_4");
-                insertValues(id, description, answer, choice_1, choice_2, choice_3, choice_4);
+                questionList.add(new Question(id, description, answer, choice_1, choice_2, choice_3, choice_4));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -198,13 +176,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void parseJSONWithGSON(String jsonData) {
         Gson gson = new Gson();
-        List<Question> questionList = gson.fromJson(jsonData, new TypeToken<List<Question>>() {
+        questionList = gson.fromJson(jsonData, new TypeToken<List<Question>>() {
         }.getType());
-
-        for (Question question : questionList) {
-            insertValues(question.getId(), question.getDescription(), question.getAnswer(),
-                    question.getChoice_1(), question.getChoice_2(), question.getChoice_3(), question.getChoice_4());
-        }
     }
 
     @Override
@@ -214,15 +187,19 @@ public class MainActivity extends AppCompatActivity {
         Button start = (Button) findViewById(R.id.start);
         dbHelper = new DatabaseHelper(this, "Key.db", null, 1);
 
-        //getXMLWithPull();
-        //getXMLWithSAX();
-        //getJSONWithJObj();
-        getJSONWithGSON();
+        //getXML();
+        getJSON();
+
+        //parseXMLWithPull(responseData);
+        //parseXMLWithSAX(responseData);
+        //parseJSONWithJObj(responseData);
+        parseJSONWithGSON(responseData);
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AnswerActivity.class);
+                intent.putExtra("questionList", (Serializable) questionList);
                 startActivity(intent);
             }
         });

@@ -12,18 +12,23 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class AnswerActivity extends AppCompatActivity {
-    TextView question;
-    RadioGroup radioGroup;
-    RadioButton CB_1;
-    RadioButton CB_2;
-    RadioButton CB_3;
-    RadioButton CB_4;
-    int value = 100;
-    int index = 1;
+import java.util.ArrayList;
+import java.util.List;
 
+public class AnswerActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
+    private TextView question;
+    private RadioGroup radioGroup;
+    private RadioButton CB_1;
+    private RadioButton CB_2;
+    private RadioButton CB_3;
+    private RadioButton CB_4;
+    private Button submit;
+
+    private List<Question> questionList = new ArrayList<>();
     private int id;
+    private int value = 100;
+    private int index = 1;
     private String description;
     private String answer;
     private String choice_1;
@@ -31,8 +36,7 @@ public class AnswerActivity extends AppCompatActivity {
     private String choice_3;
     private String choice_4;
 
-    public void setText(int i) {
-        dbHelper = new DatabaseHelper(this, "Key.db", null, 1);
+    private void queryInDatabase(int i) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery("select * from Key where id=?", new String[]{i + ""});
         if (cursor.moveToFirst()) {
@@ -45,7 +49,22 @@ public class AnswerActivity extends AppCompatActivity {
             choice_4 = cursor.getString(cursor.getColumnIndex("choice_4"));
         }
         cursor.close();
+    }
 
+    private void queryInObject(int i) {
+        Question question = questionList.get(i - 1);
+        id = i;
+        description = question.getDescription();
+        answer = question.getAnswer();
+        choice_1 = question.getChoice_1();
+        choice_2 = question.getChoice_2();
+        choice_3 = question.getChoice_3();
+        choice_4 = question.getChoice_4();
+    }
+
+    public void setText(int i) {
+        //queryInDatabase(i);
+        queryInObject(i);
         question.setText(i + ".  " + description);
         CB_1.setText(choice_1);
         CB_2.setText(choice_2);
@@ -71,7 +90,10 @@ public class AnswerActivity extends AppCompatActivity {
         CB_2 = (RadioButton) findViewById(R.id.choice_2);
         CB_3 = (RadioButton) findViewById(R.id.choice_3);
         CB_4 = (RadioButton) findViewById(R.id.choice_4);
-        Button submit = (Button) findViewById(R.id.submit);
+        submit = (Button) findViewById(R.id.submit);
+        dbHelper = new DatabaseHelper(this, "Key.db", null, 1);
+
+        questionList = (ArrayList<Question>) getIntent().getSerializableExtra("questionList");
         setText(index);
 
         submit.setOnClickListener(new View.OnClickListener() {
