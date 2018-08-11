@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AnswerActivity">
+
     <TextView
         android:id="@+id/question"
-        android:textSize="30sp"
         android:layout_width="match_parent"
         android:layout_height="0sp"
+        android:textSize="30sp"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.3"/>
+        app:layout_constraintHeight_percent="0.3" />
 
     <RadioGroup
         android:id="@+id/radioGroup"

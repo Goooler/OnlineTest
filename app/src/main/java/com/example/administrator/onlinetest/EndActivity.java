@@ -9,8 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class EndActivity extends AppCompatActivity {
-    TextView score;
-    Button retest;
+    private TextView score;
+    private Button retest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +30,7 @@ public class EndActivity extends AppCompatActivity {
         retest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1 = new Intent(EndActivity.this, MainActivity.class);
-                startActivity(intent1);
+                startActivity(new Intent(EndActivity.this, MainActivity.class));
             }
         });
     }

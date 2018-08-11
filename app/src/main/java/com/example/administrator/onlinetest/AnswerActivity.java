@@ -63,8 +63,8 @@ public class AnswerActivity extends AppCompatActivity {
     }
 
     public void setText(int i) {
-        //queryInDatabase(i);
-        queryInObject(i);
+        queryInDatabase(i);
+        //queryInObject(i);
         question.setText(i + ".  " + description);
         CB_1.setText(choice_1);
         CB_2.setText(choice_2);

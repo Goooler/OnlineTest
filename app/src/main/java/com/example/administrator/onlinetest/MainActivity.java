@@ -3,6 +3,8 @@ package com.example.administrator.onlinetest;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,13 +37,24 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private String responseData;
     private List<Question> questionList = new ArrayList<>();
-    private String xmlUrl = "http://184.170.222.135/test.xml";
-    private String jsonUrl = "http://184.170.222.135/test.json";
+    private final String xmlUrl = "http://184.170.222.135/test.xml";
+    private final String jsonUrl = "http://184.170.222.135/test.json";
+    private final int REQUESTED = 1;
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == REQUESTED) {
+                parseJSONWithGSON(responseData);
+                insertToDatabase(questionList);
+            }
+        }
+    };
 
     private void insertToDatabase(String id, String description, String answer, String choice_1, String choice_2,
                                   String choice_3, String choice_4) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.execSQL("delete from Key");
+        //db.execSQL("delete from Key");
         ContentValues values = new ContentValues();
         values.put("id", id);
         values.put("description", description);
@@ -85,7 +98,10 @@ public class MainActivity extends AppCompatActivity {
                     Request request = new Request.Builder().url(jsonUrl).build();
                     Response response = client.newCall(request).execute();
                     responseData = response.body().string();
-                    parseJSONWithGSON(responseData);
+
+                    Message message = new Message();
+                    message.what = REQUESTED;
+                    handler.sendMessage(message);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -193,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
         //parseXMLWithPull(responseData);
         //parseXMLWithSAX(responseData);
         //parseJSONWithJObj(responseData);
-        parseJSONWithGSON(responseData);
+        //parseJSONWithGSON(responseData);
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override

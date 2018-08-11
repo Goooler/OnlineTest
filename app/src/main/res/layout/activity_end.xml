@@ -8,17 +8,18 @@
 
     <TextView
         android:id="@+id/score"
-        android:textSize="30sp"
         android:layout_width="match_parent"
         android:layout_height="0sp"
         android:gravity="center"
+        android:textSize="30sp"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.5"/>
+        app:layout_constraintHeight_percent="0.5" />
+
     <Button
         android:id="@+id/retest"
-        android:text="重新考试"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/score"/>
+        android:text="重新考试"
+        app:layout_constraintTop_toBottomOf="@id/score" />
 
 </android.support.constraint.ConstraintLayout>
