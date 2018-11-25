@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private String responseData;
     private List<Question> questionList = new ArrayList<>();
-    private final String xmlUrl = "http://184.170.222.135/test.xml";
-    private final String jsonUrl = "http://184.170.222.135/test.json";
+    private final String xmlUrl = "http://67.216.214.244/test.xml";
+    private final String jsonUrl = "http://67.216.214.244/test.json";
     private final int REQUESTED = 1;
 
     private Handler handler = new Handler() {
